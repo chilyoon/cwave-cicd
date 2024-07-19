@@ -8,24 +8,28 @@ spec:
   containers:
     - image: mysql/mysql-server
       name: mysql
-      resources:
-        requests:
-          cpu: "500m"
-          memory: "500Mi"
-        limits:
-          cpu: "600m"
-          memory: "600Mi"
+      # resources:
+      #   requests:
+      #     cpu: "500m"
+      #     memory: "500Mi"
+      #   limits:
+      #     cpu: "600m"
+      #     memory: "600Mi"
       envFrom:
+          # pw 참조 
         - secretRef:
             name: istory-db-secret
+          # istory의 db에 계정과 pw을 설정
         - configMapRef:
             name: istory-db-config
       ports:
         - containerPort: 3306
           name: mysql
+      # mysql 파일에 mount
       volumeMounts:
         - name: mysql-persistent-storage
           mountPath: /var/lib/mysql
+  # sc와 pvc를 작성 후 volumes 추가
   volumes:
     - name: mysql-persistent-storage
       persistentVolumeClaim:

@@ -8,7 +8,7 @@ spec:
   selector:
     matchLabels:
       app: {{ .Values.domain_name }}
-  replicas: 3
+  replicas: 5
   template:
     metadata:
       labels:

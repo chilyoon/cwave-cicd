@@ -3,6 +3,7 @@ kind: ConfigMap
 metadata:
   name: istory-app-config
 data:
+  # mysql-svc.default -> db가 ip가 바껴도 coredns가 있기에 자동으로 따라감.
   spring.datasource.url: 'jdbc:mysql://mysql-svc.default:3306/istory'
   spring.datasource.driver-class-name: 'com.mysql.cj.jdbc.Driver'
   spring.jpa.database-platform: 'org.hibernate.dialect.MySQLDialect'

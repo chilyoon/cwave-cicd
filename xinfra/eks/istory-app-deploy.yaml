@@ -14,6 +14,8 @@ spec:
       labels:
         app:  istory
     spec:
+      # db가 없다면 애플리케이션 가동이 안되기 때문에 command를 실행해 접속
+      # initContainer는 complete가 되어야 컨테이너가 띄어진다.
       initContainers:
         - name: check-mysql-ready
           image: mysql:8.0
@@ -28,11 +30,13 @@ spec:
                     'until mysqladmin ping -u dangtong -p${MYSQL_PASSWORD} -h mysql-svc.default; do echo waiting for database; sleep 2; done;']
       containers:
         - name:  istory
-          image:  dangtong/istory
+          image:  nby5699/istory
+          # envFrom으로 istory-app-config에 있는걸 다 export 한다.
           envFrom:
             - configMapRef:
                 name: istory-app-config
           env:
+              # password를 참조해 db 접근
             - name: spring.datasource.password
               valueFrom:
                 secretKeyRef:
@@ -43,13 +47,13 @@ spec:
                 configMapKeyRef:
                   name: istory-db-config
                   key: MYSQL_USER
-          resources:
-            requests:
-              cpu: 300m
-              memory: 500Mi
-            limits:
-              cpu: 400m
-              memory: 600Mi
+          # resources:
+          #   requests:
+          #     cpu: 300m
+          #     memory: 500Mi
+          #   limits:
+          #     cpu: 400m
+          #     memory: 600Mi
           readinessProbe:
             httpGet:
               path: /actuator
@@ -62,6 +66,7 @@ spec:
           ports:
             - containerPort:  3306
               name:  istory
+      # config volume mount
       volumes:
         - name: application-config
           configMap:
